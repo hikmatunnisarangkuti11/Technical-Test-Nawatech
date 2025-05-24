@@ -1,0 +1,7 @@
+@if (TempData["Success"] != null)
+{
+<div class="alert alert-success">
+    @TempData["Success"]
+</div>
+}
+<div asp-validation-summary="All" class="text-danger"></div>
