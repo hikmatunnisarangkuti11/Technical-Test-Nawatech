@@ -27,13 +27,14 @@ dan terdapat fitur email confirmation (bisa diaktifkan/dinonaktifkan).
    ```bash
    git clone [https://github.com/username/Project1.git](https://github.com/hikmatunnisarangkuti11/Technical-Test-Nawatech.git)
    cd Project1
-2. Update Connection String
+   
+2. **Clone repository**  
   Buka appsettings.json, sesuaikan connection string database:
-  ```json
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=Project1Db;Trusted_Connection=True;MultipleActiveResultSets=true"
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=Project1Db;Trusted_Connection=True;MultipleActiveResultSets=true
   }
-3. Buat dan jalankan migration database
+  
+3.  Buat dan jalankan migration database
   dotnet ef migrations add InitialCreate
   dotnet ef database update
   Jika belum install EF Core CLI:
