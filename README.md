@@ -1,11 +1,15 @@
 # Project1 - ASP.NET Core MVC with Identity
 
-##📋 Deskripsi  
-Proyek ini adalah aplikasi web berbasis ASP.NET Core MVC yang menggunakan ASP.NET Core Identity untuk fitur:
-Registrasi
-Login & Logout
-Manajemen user
-Password sudah otomatis di-hash
+##📋 Deskripsi
+   Proyek ini adalah aplikasi web berbasis ASP.NET Core MVC yang menggunakan ASP.NET Core Identity untuk fitur:
+   
+   Registrasi
+   
+   Login & Logout
+   
+   Manajemen user
+   
+   Password sudah otomatis di-hash
 ---
 
 ##✅ Prasyarat  
@@ -41,7 +45,7 @@ Password sudah otomatis di-hash
    dotnet ef database update
    
 4. Jalankan aplikasi:
-  dotnet run
+   dotnet run
 
-5.Buka di browser:
-  https://localhost:5001
+5. Buka di browser:
+   https://localhost:5001
