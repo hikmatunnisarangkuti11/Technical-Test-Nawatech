@@ -28,8 +28,7 @@ dan terdapat fitur email confirmation (bisa diaktifkan/dinonaktifkan).
    git clone [https://github.com/username/Project1.git](https://github.com/hikmatunnisarangkuti11/Technical-Test-Nawatech.git)
    cd Project1
    
-2. **Clone repository**  
-  Buka appsettings.json, sesuaikan connection string database:
+2. Buka appsettings.json, sesuaikan connection string database:
   "ConnectionStrings": {
     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=Project1Db;Trusted_Connection=True;MultipleActiveResultSets=true
   }
