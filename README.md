@@ -26,7 +26,6 @@ dan terdapat fitur email confirmation (bisa diaktifkan/dinonaktifkan).
 1. **Clone repository**  
    ```bash
    git clone [https://github.com/username/Project1.git](https://github.com/hikmatunnisarangkuti11/Technical-Test-Nawatech.git)
-   cd Project1 Jalankan dotnet run
    
 2. Buka appsettings.json, sesuaikan connection string database:
   "ConnectionStrings": {
