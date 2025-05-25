@@ -9,5 +9,9 @@ namespace Project1.Data
         public AppDbContext(DbContextOptions options) : base(options)
         {
         }
+
+        public DbSet<ProductCategory> ProductCategories { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }
+    

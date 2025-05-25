@@ -1,0 +1,90 @@
+@model List<Project1.Models.Product>
+
+    @{
+    ViewData["Title"] = "Product List";
+    }
+
+    <div class="container mt-4">
+        <h1 class="mb-3">@ViewData["Title"]</h1>
+
+        <div class="d-flex justify-content-start mb-3">
+            <a asp-action="Create" class="btn btn-primary">Create New Product</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 100px;">Picture</th>
+                        <th style="width: 80px;">Name</th>
+                        <th style="width: 80px;">Category</th>
+                        <th style="width: 80px;">Stock</th>
+                        <th style="width: 120px;">Price / pcs</th>
+                        <th style="width: 200px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Picture))
+                            {
+                            <img src="~/images/products/@item.Picture" alt="@item.Name" width="100" />
+                            }
+                            else
+                            {
+                            <span>No image</span>
+                            }
+                        </td>
+                        <td>@item.Name</td>
+                        <td>@(item.ProductCategory?.Name ?? "No Category")</td>
+                        <td>@item.Stock</td>
+                        <td>@item.Price.ToString("C")</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1">Edit</a>
+
+                            <button type="button" class="btn btn-sm btn-info me-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editStockModal-@item.Id">
+                                Edit Stock
+                            </button>
+
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <div class="modal fade" id="editStockModal-@item.Id" tabindex="-1" aria-labelledby="editStockLabel-@item.Id" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form asp-action="EditStock" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editStockLabel-@item.Id">Edit Stock - @item.Name</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="Id" value="@item.Id" />
+                                        <div class="mb-3">
+                                            <label for="stock-@item.Id" class="form-label">Stock</label>
+                                            <input type="number" name="Stock" id="stock-@item.Id" class="form-control" value="@item.Stock" required />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    }

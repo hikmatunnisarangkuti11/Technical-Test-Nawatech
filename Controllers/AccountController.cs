@@ -1,104 +1,109 @@
-﻿public class AccountController : Controller
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+using Project1.Models;        
+using Project1.ViewModels;    
+using Project1.Services;     
+
+namespace Project1.Controllers
 {
-    private readonly UserManager<Users> _userManager;
-    private readonly SignInManager<Users> _signInManager;
-    private readonly EmailService _emailService;
-
-    public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager, EmailService emailService)
+    public class AccountController : Controller
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _emailService = emailService;
-    }
+        private readonly UserManager<Users> _userManager;
+        private readonly SignInManager<Users> _signInManager;
+        private readonly EmailService _emailService;
 
-    [HttpGet]
-    public IActionResult Register()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Register(RegisterViewModel model)
-    {
-        if (!ModelState.IsValid)
-            return View(model);
-
-        var user = new Users
+        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager, EmailService emailService)
         {
-            UserName = model.Email,
-            Email = model.Email,
-            Name = model.Name,
-            EmailConfirmed = true 
-        };
-
-        var result = await _userManager.CreateAsync(user, model.Password);
-        if (result.Succeeded)
-        {
-            TempData["Success"] = "Registration successful!";
-            return RedirectToAction("Login");
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _emailService = emailService;
         }
 
-        foreach (var error in result.Errors)
-            ModelState.AddModelError(string.Empty, error.Description);
-
-        return View(model);
-    }
-
-    [HttpGet]
-    public IActionResult Login(string? returnUrl = null)
-    {
-        ViewData["ReturnUrl"] = returnUrl;
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
-    {
-        ViewData["ReturnUrl"] = returnUrl;
-
-        if (!ModelState.IsValid)
-            return View(model);
-
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
+        [HttpGet]
+        public IActionResult Register()
         {
-            ModelState.AddModelError("", "You need to confirm your email first.");
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = new Users
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                Name = model.Name
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Registration successful!";
+                return RedirectToAction("Login");
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
             return View(model);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-
-        if (result.Succeeded)
+        [HttpGet]
+        public IActionResult Login(string? returnUrl = null)
         {
-            if (Url.IsLocalUrl(returnUrl))
-                return Redirect(returnUrl);
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                if (Url.IsLocalUrl(returnUrl))
+                    return Redirect(returnUrl);
+                else
+                    return RedirectToAction("Index", "Profile"); 
+            }
+
+            else if (result.IsLockedOut)
+            {
+                ModelState.AddModelError("", "User is locked out.");
+            }
+            else if (result.IsNotAllowed)
+            {
+                ModelState.AddModelError("", "User is not allowed to login.");
+            }
+            else if (result.RequiresTwoFactor)
+            {
+                ModelState.AddModelError("", "Two-factor authentication is required.");
+            }
             else
-                return RedirectToAction("Index", "Home");
-        }
-        else if (result.IsLockedOut)
-        {
-            ModelState.AddModelError("", "User is locked out.");
-        }
-        else if (result.IsNotAllowed)
-        {
-            ModelState.AddModelError("", "User is not allowed to login.");
-        }
-        else if (result.RequiresTwoFactor)
-        {
-            ModelState.AddModelError("", "Two-factor authentication is required.");
-        }
-        else
-        {
-            ModelState.AddModelError("", "Invalid login attempt.");
+            {
+                ModelState.AddModelError("", "Invalid login attempt.");
+            }
+
+            return View(model);
         }
 
-        return View(model);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Logout()
-    {
-        await _signInManager.SignOutAsync();
-        return RedirectToAction("Index", "Home");
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

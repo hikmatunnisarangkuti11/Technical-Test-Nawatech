@@ -1,0 +1,20 @@
+@model Project1.Models.ProductCategoryViewModel
+
+<h2>Create Category</h2>
+
+<form asp-action="Create" method="post" class="main-form">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="NewCategory.Name" class="form-label"></label>
+        <input asp-for="NewCategory.Name" class="form-control" />
+        <span asp-validation-for="NewCategory.Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

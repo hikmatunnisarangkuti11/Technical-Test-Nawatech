@@ -20,3 +20,81 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Styling untuk form create/edit */
+form.main-form {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Styling untuk form delete di tabel */
+form.delete-form {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 0; /* jangan kasih padding biar tombol tetap kecil */
+}
+
+    form.delete-form button.btn-sm.btn-danger {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+
+/* Margin kanan tombol Edit biar tidak nempel ke Delete */
+a.btn-sm.btn-warning {
+    margin-right: 5px; /* atau bisa pakai me-1 */
+}
+
+
+input.form-control,
+select.form-select,
+textarea.form-control {
+    border: 1px solid #ced4da;
+    padding: 10px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease-in-out;
+}
+
+    input.form-control:focus,
+    select.form-select:focus,
+    textarea.form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 5px rgba(13,110,253,0.3);
+        outline: none;
+    }
+
+.text-danger {
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+
+button.btn-primary {
+    min-width: 100px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+a.btn-secondary {
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    form {
+        padding: 15px;
+    }
+
+    button,
+    a.btn-secondary {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    a.btn-secondary {
+        margin-left: 0;
+    }
+}
+
