@@ -8,8 +8,12 @@
    Login & Logout
    
    Manajemen user
-   
-   Password sudah otomatis di-hash
+
+   Management product
+
+   Management CategoryProduct
+
+
 ---
 
 ##✅ Prasyarat  
