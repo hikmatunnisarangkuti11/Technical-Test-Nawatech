@@ -3,7 +3,7 @@
 ##📋 Deskripsi
    Proyek ini adalah aplikasi web berbasis ASP.NET Core MVC yang menggunakan ASP.NET Core Identity untuk fitur:
    
-   Registrasi
+   Registrasi & Validation Email
    
    Login & Logout
    
