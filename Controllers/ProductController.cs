@@ -7,9 +7,11 @@ using System.IO;
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Project1.Controllers
 {
+    [Authorize]
     public class ProductsController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,14 +21,57 @@ namespace Project1.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int pageNumber = 1, int pageSize = 10, int deletedPageNumber = 1, int deletedPageSize = 10)
         {
-            var products = _context.Products
+            var activeProductsQuery = _context.Products
                 .Include(p => p.ProductCategory)
                 .Where(p => !p.IsDeleted)
+                .OrderBy(p => p.Id);
+
+            var totalCount = activeProductsQuery.Count();
+
+            var products = activeProductsQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
+
+            var deletedProductsQuery = _context.Products
+                .Include(p => p.ProductCategory)
+                .Where(p => p.IsDeleted)
+                .OrderBy(p => p.Id);
+
+            var deletedCount = deletedProductsQuery.Count();
+
+            var deletedProducts = deletedProductsQuery
+                .Skip((deletedPageNumber - 1) * deletedPageSize)
+                .Take(deletedPageSize)
+                .ToList();
+
+            ViewData["PageNumber"] = pageNumber;
+            ViewData["PageSize"] = pageSize;
+            ViewData["TotalCount"] = totalCount;
+
+            ViewData["DeletedPageNumber"] = deletedPageNumber;
+            ViewData["DeletedPageSize"] = deletedPageSize;
+            ViewData["DeletedTotalCount"] = deletedCount;
+
+            ViewBag.DeletedProducts = deletedProducts;
+
             return View(products);
         }
+
+        [HttpPost]
+        public IActionResult Restore(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product != null && product.IsDeleted)
+            {
+                product.IsDeleted = false;
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
 
         public IActionResult Create()
         {
@@ -73,6 +118,26 @@ namespace Project1.Controllers
             return View(product);
         }
 
+        [HttpGet]
+        public IActionResult Search(string term)
+        {
+            var results = _context.Products
+                .Include(p => p.ProductCategory)
+                .Where(p => !p.IsDeleted && p.Name.Contains(term))
+                .Select(p => new {
+                    p.Id,
+                    p.Name,
+                    CategoryName = p.ProductCategory.Name,
+                    p.Stock,
+                    p.Price,
+                    p.Picture
+                })
+                .ToList();
+
+            return Json(results);
+        }
+
+
         public IActionResult Edit(int id)
         {
             var product = _context.Products.Find(id);
@@ -86,10 +151,16 @@ namespace Project1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Product product, IFormFile? pictureFile)
+        public IActionResult Edit(Product updatedProduct, IFormFile? pictureFile)
         {
             if (ModelState.IsValid)
             {
+                var existingProduct = _context.Products.AsNoTracking().FirstOrDefault(p => p.Id == updatedProduct.Id);
+                if (existingProduct == null)
+                    return NotFound();
+
+                updatedProduct.Stock = existingProduct.Stock;
+
                 if (pictureFile != null && pictureFile.Length > 0)
                 {
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(pictureFile.FileName);
@@ -101,16 +172,20 @@ namespace Project1.Controllers
                         pictureFile.CopyTo(stream);
                     }
 
-                    product.Picture = fileName;
+                    updatedProduct.Picture = fileName;
+                }
+                else
+                {
+                    updatedProduct.Picture = existingProduct.Picture;
                 }
 
-                _context.Products.Update(product);
+                _context.Products.Update(updatedProduct);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = new SelectList(_context.ProductCategories.Where(c => !c.IsDeleted).ToList(), "Id", "Name", product.ProductCategoryId);
-            return View(product);
+            ViewBag.Categories = new SelectList(_context.ProductCategories.Where(c => !c.IsDeleted).ToList(), "Id", "Name", updatedProduct.ProductCategoryId);
+            return View(updatedProduct);
         }
 
         public IActionResult EditStock(int id)
@@ -140,14 +215,12 @@ namespace Project1.Controllers
         public IActionResult Delete(int id)
         {
             var product = _context.Products.Find(id);
-            if (product != null)
+            if (product != null && !product.IsDeleted)
             {
                 product.IsDeleted = true;
                 _context.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
         }
-
-
     }
 }

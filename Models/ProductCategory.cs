@@ -5,5 +5,6 @@ namespace Project1.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
     }
 }

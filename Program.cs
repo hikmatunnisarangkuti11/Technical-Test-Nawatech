@@ -5,7 +5,6 @@ using Project1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<Project1.Services.EmailService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -19,9 +18,6 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
     options.Password.RequireLowercase = false;
     options.User.RequireUniqueEmail = true;
 
-    //options.SignIn.RequireConfirmedAccount = true;
-    //options.SignIn.RequireConfirmedEmail = true;
-    //options.SignIn.RequireConfirmedPhoneNumber = false;
 })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();

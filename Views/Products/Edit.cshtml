@@ -37,6 +37,9 @@
         <input type="file" name="pictureFile" class="form-control" />
     </div>
 
+    <input type="hidden" asp-for="Stock" />
+
+
     @if (!string.IsNullOrEmpty(Model.Picture))
     {
     <div class="mb-3">

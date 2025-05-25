@@ -1,9 +1,18 @@
-﻿namespace Project1.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Project1.ViewModels
 {
     public class ChangePasswordViewModel
     {
-        public string Email { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "New Password")]
         public string NewPassword { get; set; }
-        public string ConfirmNewPassword { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password")]
+        [Compare("NewPassword", ErrorMessage = "Passwords do not match.")]
+        public string ConfirmPassword { get; set; }
     }
 }

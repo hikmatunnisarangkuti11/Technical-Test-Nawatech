@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Project1.Models;  
-using Project1.ViewModels; 
+using Project1.Models;
+using Project1.ViewModels;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using System;
 
 [Authorize]
 public class ProfileController : Controller
@@ -21,7 +22,12 @@ public class ProfileController : Controller
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null) return NotFound();
+        if (user == null)
+            return NotFound();
+
+        ViewBag.ProfilePicture = string.IsNullOrEmpty(user.Picture)
+            ? "/images/default-profile.png"
+            : user.Picture;
 
         var model = new ProfileEditViewModel
         {
@@ -29,6 +35,7 @@ public class ProfileController : Controller
             Email = user.Email,
             Picture = user.Picture
         };
+
         return View(model);
     }
 
@@ -39,18 +46,19 @@ public class ProfileController : Controller
             return View(model);
 
         var user = await _userManager.GetUserAsync(User);
-        if (user == null) return NotFound();
+        if (user == null)
+            return NotFound();
 
         user.Name = model.Name;
 
         if (profilePicture != null && profilePicture.Length > 0)
         {
-            var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-            if (!Directory.Exists(uploads))
-                Directory.CreateDirectory(uploads);
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
-            var fileName = $"{user.Id}_{Path.GetFileName(profilePicture.FileName)}";
-            var filePath = Path.Combine(uploads, fileName);
+            var fileName = $"{user.Id}_{Guid.NewGuid()}{Path.GetExtension(profilePicture.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -64,12 +72,12 @@ public class ProfileController : Controller
 
         if (result.Succeeded)
         {
-            TempData["Success"] = "Profile updated!";
+            TempData["Success"] = "Profile updated successfully!";
             return RedirectToAction("Index");
         }
 
         foreach (var error in result.Errors)
-            ModelState.AddModelError("", error.Description);
+            ModelState.AddModelError(string.Empty, error.Description);
 
         return View(model);
     }

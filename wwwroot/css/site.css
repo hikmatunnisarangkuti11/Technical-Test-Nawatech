@@ -11,6 +11,13 @@ html {
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
+.profile-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%; 
+    display: inline-block;
+}
 
 html {
   position: relative;
@@ -21,7 +28,6 @@ body {
   margin-bottom: 60px;
 }
 
-/* Styling untuk form create/edit */
 form.main-form {
     max-width: 600px;
     margin: 0 auto;
@@ -31,11 +37,10 @@ form.main-form {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Styling untuk form delete di tabel */
 form.delete-form {
     display: inline-block;
     margin-left: 8px;
-    padding: 0; /* jangan kasih padding biar tombol tetap kecil */
+    padding: 0; 
 }
 
     form.delete-form button.btn-sm.btn-danger {
@@ -43,9 +48,8 @@ form.delete-form {
         font-size: 0.8rem;
     }
 
-/* Margin kanan tombol Edit biar tidak nempel ke Delete */
 a.btn-sm.btn-warning {
-    margin-right: 5px; /* atau bisa pakai me-1 */
+    margin-right: 5px; 
 }
 
 

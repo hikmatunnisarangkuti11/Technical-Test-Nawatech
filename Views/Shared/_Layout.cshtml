@@ -31,50 +31,40 @@
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Products" asp-action="Index">Products</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="ProductCategories" asp-action="Index">Categories</a>
-                        </li>
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">Profile</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Products" asp-action="Index">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="ProductCategories" asp-action="Index">Categories</a>
+                            </li>
                         }
                     </ul>
 
-                    @if (User.Identity.IsAuthenticated)
-                    {
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <form method="post" asp-controller="Account" asp-action="Logout" class="form-inline">
-                                <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
-                            </form>
-                        </li>
-                        <li class="nav-item">
-                            @{
-                                    var profilePicture = ViewBag.ProfilePicture as string ?? "/images/default-profile.png";
-                            }
-                            <a class="nav-link" asp-controller="Profile" asp-action="Index" title="Your Profile">
-                                <img src="@profilePicture" alt="Profile" class="navbar-profile-img" />
-                            </a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form method="post" asp-controller="Account" asp-action="Logout" class="form-inline">
+                                    <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
+                                </form>
+                            </li>
+                            <li class="nav-item">
+                                @{
+                                    var profilePic = ViewBag.ProfilePicture as string ?? "/images/default-profile.png";
+                                }
+                                <a asp-controller="Profile" asp-action="Index" class="nav-link">
+                                    <img src="@Url.Content(profilePic)" alt="Profile Picture" class="navbar-profile-img" />
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <partial name="_LoginPartial" />
+                        }
                     </ul>
-                    }
-                    else
-                    {
-                    <partial name="_LoginPartial" />
-                    }
                 </div>
             </div>
         </nav>
@@ -85,12 +75,6 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Project1 - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
